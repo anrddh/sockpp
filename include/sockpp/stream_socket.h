@@ -63,8 +63,6 @@ namespace sockpp {
 class stream_socket : public socket
 {
 protected:
-	friend class acceptor;
-
 	/**
 	 * Creates a streaming socket.
 	 * @return An OS handle to a TCP socket.
@@ -85,8 +83,8 @@ public:
 	 */
 	explicit stream_socket(socket_t sock) : socket(sock) {}
 	/**
-	 * Creates a stream socket by copying the socket handle from the 
-	 * specified socket object and transfers ownership of the socket. 
+	 * Creates a stream socket by copying the socket handle from the
+	 * specified socket object and transfers ownership of the socket.
 	 */
 	stream_socket(stream_socket&& sock) : socket(std::move(sock)) {}
 
@@ -258,4 +256,3 @@ using unix_socket = stream_socket;
 }
 
 #endif		// __sockpp_socket_h
-

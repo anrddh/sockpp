@@ -64,57 +64,9 @@ bool acceptor::bind(const sockaddr* addr, socklen_t len)
 
 bool acceptor::open(const sockaddr* addr, socklen_t len, int queSize /*=DFLT_QUE_SIZE*/)
 {
-	// TODO: What to do if we are open but bound to a different address?
-	if (is_open())
-		return true;
-
-	sa_family_t domain;
-	if (!addr || len < sizeof(sa_family_t)
-			|| 	(domain = *(reinterpret_cast<const sa_family_t*>(addr))) == AF_UNSPEC) {
-		// TODO: Set last error for "address unspecified"
-		return false;
-	}
-
-	socket_t h = stream_socket::create(domain);
-	if (!check_ret_bool(h))
-		return false;
-
-	reset(h);
-
-	#if !defined(WIN32)
-        // TODO: This should be an option
-		if (domain == AF_INET || domain == AF_INET6) {
-			int reuse = 1;
-			if (!set_option(SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int))) {
-				close();
-				return false;
-			}
-		}
-	#endif
-
-	if (!bind(addr, len) || !listen(queSize)) {
-		close();
-		return false;
-	}
-
-	return true;
 }
 
-// --------------------------------------------------------------------------
-
-stream_socket acceptor::accept(sock_address* clientAddr /*=nullptr*/)
-{
-    sockaddr_storage addr;
-    socklen_t len;
-
-    auto paddr = reinterpret_cast <sockaddr*>(&addr);
-    socket_t s = check_ret(::accept(handle(), paddr, &len));
-    if (clientAddr)
-        *clientAddr = sock_address(paddr, len);
-	return stream_socket(s);
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // end namespace sockpp
 }
-

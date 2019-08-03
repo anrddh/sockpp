@@ -148,6 +148,9 @@ public:
 	socket(socket&& sock) noexcept : handle_(sock.handle_), lastErr_(0) {
 		sock.handle_ = INVALID_SOCKET;
 	}
+
+    socket(sock_address_ref);
+
 	/**
 	 * Destructor closes the socket.
 	 */
@@ -328,4 +331,3 @@ public:
 }
 
 #endif		// __sockpp_socket_h
-
